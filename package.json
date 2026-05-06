@@ -1,0 +1,16 @@
+{
+  "name": "freelancer-business-card",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "nuxt dev",
+    "build": "nuxt build",
+    "preview": "nuxt preview"
+  },
+  "dependencies": {
+    "@iconify/vue": "^5.0.1",
+    "@nuxtjs/tailwindcss": "^6.14.0",
+    "@pinia/nuxt": "^0.11.2",
+    "nuxt": "^3.18.1"
+  }
+}

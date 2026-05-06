@@ -1,21 +1,12 @@
+import { defineNuxtConfig } from "nuxt/config";
+
 export default defineNuxtConfig({
+  ssr: true,
   compatibilityDate: "2025-01-01",
-  devtools: { enabled: true },
+  devtools: { enabled: false },
   experimental: {
     appManifest: false
   },
   modules: ["@pinia/nuxt", "@nuxtjs/tailwindcss"],
-  css: ["~/assets/css/main.css"],
-  tailwindcss: {
-    config: {
-      content: [
-        "./app.vue",
-        "./pages/**/*.vue",
-        "./components/**/*.vue",
-        "./widgets/**/*.vue",
-        "./features/**/*.vue",
-        "./shared-ui/**/*.vue"
-      ]
-    }
-  }
+  css: ["~/assets/css/main.css"]
 });

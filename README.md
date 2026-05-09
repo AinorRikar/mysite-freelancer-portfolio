@@ -112,17 +112,38 @@ docker compose logs -f app
 - проксирует трафик в `app:3000`,
 - использует конфиг `nginx/conf.d/default.conf`.
 
-### SSL
+### HTTPS (браузер открывает `https://` по умолчанию)
 
-1. Положить сертификаты в:
-   - `./certs/fullchain.pem`
-   - `./certs/privkey.pem`
-2. Включить HTTPS-блок в `nginx/conf.d/default.conf`.
-3. Перезапустить nginx:
+Пока на **443** нет TLS, запросы на `https://IP` падают или помечаются как «заблокированные». Раньше у вас, скорее всего, уже лежали сертификаты в `./certs` и был включён SSL-блок.
+
+**Вариант A — самоподписанный сертификат (доступ по IP, без домена)**
+
+На машине с OpenSSL (на сервере в каталоге MySite):
+
+```bash
+chmod +x ./scripts/generate-selfsigned-certs.sh
+./scripts/generate-selfsigned-certs.sh ВАШ_ПУБЛИЧНЫЙ_IP
+```
+
+Появятся `certs/fullchain.pem` и `certs/privkey.pem`. В текущем `nginx/conf.d/default.conf` блок **443 уже включён** — после появления файлов:
 
 ```bash
 docker compose restart nginx
 ```
+
+В браузере будет предупреждение о недоверенном сертификате — один раз «Дополнительно → перейти» (или импорт исключения). Так `https://IP` снова начинает работать.
+
+**Вариант B — Let's Encrypt (нужен домен)**
+
+Положите выданные LE файлы в те же пути `certs/fullchain.pem` и `certs/privkey.pem`, перезапустите nginx. Тогда предупреждений не будет.
+
+**Принудительный переход с HTTP на HTTPS**
+
+В `nginx/conf.d/default.conf` в блоке `server` на порту **80** раскомментируйте строку:
+
+`# return 301 https://$host$request_uri;`
+
+(только когда 443 уже настроен и проверен.)
 
 ## Полезные примечания
 

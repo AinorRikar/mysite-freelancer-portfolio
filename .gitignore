@@ -10,3 +10,5 @@ coverage/
 .env
 .env.*
 !.env.example
+# TLS в ./certs (см. scripts/generate-selfsigned-certs.sh); не коммитить ключи
+certs/*.pem

@@ -8,6 +8,9 @@ const route = useRoute();
 let removeSyncHandlers: null | (() => void) = null;
 
 const syncHashWithActiveSection = () => {
+  if (!import.meta.client) {
+    return;
+  }
   if (route.path !== "/") {
     return;
   }
@@ -69,6 +72,9 @@ const syncHashWithActiveSection = () => {
 watch(
   () => route.path,
   async () => {
+    if (!import.meta.client) {
+      return;
+    }
     removeSyncHandlers?.();
     removeSyncHandlers = null;
     await nextTick();

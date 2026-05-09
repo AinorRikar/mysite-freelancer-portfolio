@@ -30,6 +30,8 @@ services:
     networks:
       - web
 
+# Общая сеть с проектом gogol_tasks (дашборд). На сервере один раз: docker network create web
 networks:
   web:
-    driver: bridge
+    external: true
+    name: web

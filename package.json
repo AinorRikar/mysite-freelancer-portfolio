@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "nuxt dev",
     "build": "nuxt build",
-    "preview": "nuxt preview"
+    "preview": "nuxt preview",
+    "fsd:check": "node ./scripts/fsd/check-public-api.mjs"
   },
   "dependencies": {
     "@iconify/vue": "^5.0.1",

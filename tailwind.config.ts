@@ -2,12 +2,12 @@ import type { Config } from "tailwindcss";
 
 export default <Partial<Config>>{
   content: [
-    "./app.vue",
-    "./pages/**/*.vue",
-    "./components/**/*.vue",
-    "./widgets/**/*.vue",
-    "./features/**/*.vue",
-    "./shared-ui/**/*.vue",
-    "./entities/**/*.vue"
+    "./src/app.vue",
+    "./src/pages/**/*.vue",
+    "./src/components/**/*.vue",
+    "./src/widgets/**/*.vue",
+    "./src/features/**/*.vue",
+    "./src/shared/**/*.vue",
+    "./src/entities/**/*.vue"
   ]
 };

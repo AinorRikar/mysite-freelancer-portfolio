@@ -14,9 +14,9 @@ body {
 }
 
 .animated-bg {
-  background: linear-gradient(120deg, #000000, #11051f, #1a0830, #000000);
+  background: linear-gradient(120deg, #000000, #11051f, #1a092e, #11051f, #000000);
   background-size: 260% 260%;
-  animation: darkGradientShift 8s ease infinite;
+  animation: darkGradientShift 15s ease infinite;
 }
 
 @keyframes darkGradientShift {

@@ -19,11 +19,11 @@ const projects: PortfolioProject[] = [
   <section id="portfolio" class="scroll-mt-28 min-h-[78vh] space-y-8 py-8">
     <RevealOnScroll>
       <h2 class="text-4xl font-bold">Портфолио</h2>
-      <p class="max-w-4xl text-lg text-zinc-300">
+      <p class="mt-4 max-w-4xl text-lg text-zinc-300">
         Реальные задачи и измеримые результаты проектов.
       </p>
 
-      <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+      <div class="mt-6 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
         <HoverLift
           v-for="project in projects"
           :key="project.name"

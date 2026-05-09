@@ -2,6 +2,7 @@
 import { Icon } from "@iconify/vue";
 import { computed, unref } from "vue";
 import type { ComputedRef, Ref } from "vue";
+import { HoverLift } from "~/shared/ui/hover-lift";
 
 type HeroStat = { label: string; value: string };
 
@@ -44,14 +45,14 @@ const normalizedHeroStats = computed(() => unref(props.heroStats));
     </div>
 
     <div class="grid gap-4 md:grid-cols-3">
-      <article
+      <HoverLift
         v-for="stat in normalizedHeroStats"
         :key="stat.label"
         class="flex min-h-[140px] flex-col items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900 p-6 text-center"
       >
         <p class="text-4xl font-semibold text-cyan-300">{{ stat.value }}</p>
         <p class="mt-1 text-base text-zinc-400">{{ stat.label }}</p>
-      </article>
+      </HoverLift>
     </div>
   </div>
 </template>

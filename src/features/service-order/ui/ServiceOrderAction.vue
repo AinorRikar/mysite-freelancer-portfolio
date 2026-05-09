@@ -37,14 +37,13 @@ const closeModal = () => {
       >
         <div class="w-full max-w-xl rounded-2xl border border-zinc-700 bg-zinc-950 p-5 shadow-2xl">
           <div class="mb-4 flex items-center justify-between">
-            <h3 class="text-xl font-semibold">Заявка на услугу: {{ serviceTitle }}</h3>
+            <h3 class="text-xl font-semibold text-cyan-500">Заявка на услугу:<br>{{ serviceTitle }}</h3>
             <button
               type="button"
               class="inline-flex items-center gap-1 rounded-md border border-zinc-700 px-3 py-1 text-sm text-zinc-300 hover:bg-zinc-800"
               @click="closeModal"
             >
               <Icon icon="material-symbols:close-rounded" />
-              Закрыть
             </button>
           </div>
           <ContactForm :initial-topic="`Заказать ${serviceTitle}`" />

@@ -10,11 +10,11 @@ const site = useSiteStore();
   <section id="services" class="scroll-mt-28 min-h-[78vh] space-y-8 py-8">
     <RevealOnScroll>
       <h2 class="text-4xl font-bold">Услуги</h2>
-      <p class="max-w-4xl text-lg text-zinc-300">
+      <p class="mt-4 max-w-4xl text-lg text-zinc-300">
         Форматы сотрудничества для бизнеса, агентств и стартапов.
       </p>
 
-      <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div class="mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         <HoverLift
           v-for="service in site.services"
           :key="service.title"

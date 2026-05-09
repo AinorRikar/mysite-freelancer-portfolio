@@ -23,8 +23,18 @@ const activateSlide = (index: number) => {
   dragOffset.value = 0;
 };
 
+const isInteractiveTarget = (target: EventTarget | null) => {
+  if (!(target instanceof Element)) {
+    return false;
+  }
+  return Boolean(target.closest("a, button, input, textarea, select, label"));
+};
+
 const handlePointerDown = (event: PointerEvent) => {
   if (!sliderRoot.value) {
+    return;
+  }
+  if (isInteractiveTarget(event.target)) {
     return;
   }
   isDragging.value = true;

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useSiteStore } from "~/entities/site";
+import { HoverLift } from "~/shared/ui/hover-lift";
 import { RevealOnScroll } from "~/shared/ui/reveal-on-scroll";
 
 const site = useSiteStore();
@@ -14,9 +15,10 @@ const site = useSiteStore();
       </p>
 
       <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <article
+        <HoverLift
           v-for="service in site.services"
           :key="service.title"
+          tag="article"
           class="flex h-full flex-col rounded-2xl border border-zinc-800 bg-zinc-900/80 p-8"
         >
           <div class="space-y-3">
@@ -36,7 +38,7 @@ const site = useSiteStore();
               Подробнее об услуге
             </NuxtLink>
           </div>
-        </article>
+        </HoverLift>
       </div>
     </RevealOnScroll>
   </section>

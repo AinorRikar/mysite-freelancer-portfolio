@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { HoverLift } from "~/shared/ui/hover-lift";
 import { RevealOnScroll } from "~/shared/ui/reveal-on-scroll";
 
 type PortfolioProject = {
@@ -23,15 +24,16 @@ const projects: PortfolioProject[] = [
       </p>
 
       <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-        <article
+        <HoverLift
           v-for="project in projects"
           :key="project.name"
+          tag="article"
           class="rounded-xl border border-zinc-800 bg-zinc-900 p-6"
         >
           <p class="text-sm uppercase tracking-wide text-zinc-400">{{ project.niche }}</p>
           <h3 class="mt-2 text-xl font-semibold">{{ project.name }}</h3>
           <p class="mt-3 text-base text-cyan-300">{{ project.result }}</p>
-        </article>
+        </HoverLift>
       </div>
     </RevealOnScroll>
   </section>

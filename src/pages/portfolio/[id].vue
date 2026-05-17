@@ -16,7 +16,7 @@ if (error.value || !project.value) {
 }
 
 useSeoMeta({
-  title: () => `${project.value?.title ?? "Проект"} — Портфолио`,
+  title: () => project.value?.title ?? "Проект",
   description: () => project.value?.shortDescription ?? ""
 });
 </script>

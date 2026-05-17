@@ -15,6 +15,9 @@ if (!service.value) {
   });
 }
 
+useSeoMeta({
+  title: () => service.value?.title ?? "Услуга"
+});
 </script>
 
 <template>

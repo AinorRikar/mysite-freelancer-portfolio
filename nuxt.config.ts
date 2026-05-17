@@ -11,9 +11,14 @@ export default defineNuxtConfig({
   },
   modules: ["@pinia/nuxt", "@nuxtjs/tailwindcss"],
   css: ["~/assets/css/main.css"],
+  app: {
+    head: {
+      title: "Главная",
+      titleTemplate: "%s"
+    }
+  },
   runtimeConfig: {
-    integrationSecret: process.env.INTEGRATION_SECRET ?? "",
-    gogolDashboardBaseUrl:
-      process.env.GOGOL_DASHBOARD_BASE_URL ?? "http://178.250.158.178/dashboard"
+    integrationSecret: "",
+    gogolDashboardBaseUrl: "http://gogol-dashboard:3000/dashboard"
   }
 });

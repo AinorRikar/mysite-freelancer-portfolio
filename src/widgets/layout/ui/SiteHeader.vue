@@ -8,9 +8,8 @@ const isMobileMenuOpen = ref(false);
 
 const links = [
   { to: "/#home", label: "Главная", icon: "material-symbols:home-outline-rounded" },
-  { to: "/#services", label: "Услуги", icon: "material-symbols:handyman-outline-rounded" },
-  { to: "/#portfolio", label: "Портфолио", icon: "material-symbols:work-outline-rounded" },
-  { to: "/#contact", label: "Контакты", icon: "material-symbols:mail-outline-rounded" }
+  { to: "/#services", label: "Услуги", icon: "material-symbols:design-services-rounded" },
+  { to: "/#portfolio", label: "Портфолио", icon: "material-symbols:cases-rounded" }
 ];
 </script>
 

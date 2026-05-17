@@ -14,6 +14,8 @@
 ## Slice responsibilities in this project
 
 - `entities/profile`: owner, about, hero stats.
+- `entities/portfolio`: portfolio projects from gogol_tasks Integration API.
+- `widgets/portfolio-detail`: portfolio project detail page content.
 - `entities/service`: service catalog and service lookup.
 - `features/contact-form`: reusable contact form.
 - `features/service-order`: service order flow (button + modal + topic prefill).

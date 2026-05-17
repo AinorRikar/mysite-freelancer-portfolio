@@ -36,7 +36,7 @@ if (!service.value) {
 
       <div class="rounded-2xl border border-cyan-500/30 bg-zinc-950/70 p-6 shadow-[0_16px_40px_rgba(6,182,212,0.18)]">
         <h2 class="inline-flex items-center gap-2 text-2xl font-semibold text-cyan-300">
-          <Icon icon="material-symbols:deployed-code-outline-rounded" />
+          <Icon icon="material-symbols:deployed-code-outline" />
           Примерный стек технологий
         </h2>
         <div class="mt-4 flex flex-wrap gap-3">

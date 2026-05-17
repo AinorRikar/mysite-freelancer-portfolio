@@ -12,6 +12,8 @@ services:
       NODE_ENV: production
       NITRO_HOST: 0.0.0.0
       NITRO_PORT: 3000
+      INTEGRATION_SECRET: ${INTEGRATION_SECRET:-}
+      GOGOL_DASHBOARD_BASE_URL: ${GOGOL_DASHBOARD_BASE_URL:-http://gogol-dashboard:3000/dashboard}
     networks:
       - web
 

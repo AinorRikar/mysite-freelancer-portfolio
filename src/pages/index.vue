@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ContactSection, HomeSection, PortfolioSection, ServicesSection } from "~/widgets/landing";
+import { HomeSection, PortfolioSection, ServicesSection } from "~/widgets/landing";
 </script>
 
 <template>
@@ -7,6 +7,5 @@ import { ContactSection, HomeSection, PortfolioSection, ServicesSection } from "
     <HomeSection />
     <ServicesSection />
     <PortfolioSection />
-    <ContactSection />
   </div>
 </template>

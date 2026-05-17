@@ -111,7 +111,11 @@ const trackStyle = computed(() => {
           @pointerleave="finishDrag"
         >
           <div class="flex" :style="trackStyle">
-            <HomeGalleryMainPanel :owner="site.owner" :hero-stats="site.heroStats" />
+            <HomeGalleryMainPanel
+              :is-active="activeSlide === 0"
+              :owner="site.owner"
+              :hero-stats="site.heroStats"
+            />
             <HomeGalleryAboutPanel :about-text="site.aboutText" />
           </div>
         </div>

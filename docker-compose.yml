@@ -19,22 +19,8 @@ services:
     networks:
       - web
 
-  nginx:
-    image: nginx:1.27-alpine
-    container_name: mysite-nginx
-    restart: unless-stopped
-    depends_on:
-      - app
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./nginx/conf.d:/etc/nginx/conf.d:ro
-      - ./certs:/etc/nginx/certs:ro
-    networks:
-      - web
-
-# Общая сеть с проектом gogol_tasks (дашборд). На сервере один раз: docker network create web
+# Reverse proxy (80/443) — отдельный репозиторий ../gogol_nginx на той же сети web.
+# На сервере один раз: docker network create web
 networks:
   web:
     external: true

@@ -14,7 +14,5 @@ Dockerfile
 .dockerignore
 docker-compose.yml
 docker-compose.*.yml
-nginx
-certs
 README.md
 README*

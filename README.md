@@ -11,7 +11,7 @@
 - Pinia (`@pinia/nuxt`)
 - Tailwind CSS (`@nuxtjs/tailwindcss`)
 - Iconify (`@iconify/vue`, Material Symbols)
-- Docker + Docker Compose + Nginx reverse proxy
+- Docker + Docker Compose (reverse proxy — отдельно в `../gogol_nginx`)
 
 ## Архитектура: `server/` и `src/`
 
@@ -98,52 +98,25 @@ npm run preview
 
 ### Быстрый запуск через Docker Compose
 
+На сервере один раз создайте общую сеть (если ещё нет):
+
+```bash
+docker network create web
+```
+
+Запуск приложения (порт **3000** только внутри сети `web`, снаружи — через nginx):
+
 ```bash
 docker compose build
 docker compose up -d
 docker compose logs -f app
 ```
 
-`app` контейнер:
-- билдит Nuxt и запускает `.output/server/index.mjs` на `3000` внутри сети compose.
+Контейнер `mysite-app` билдит Nuxt и слушает `3000` в сети `web`.
 
-`nginx` контейнер:
-- публикует `80/443`,
-- проксирует трафик в `app:3000`,
-- использует конфиг `nginx/conf.d/default.conf`.
+### Reverse proxy и HTTPS
 
-### HTTPS (браузер открывает `https://` по умолчанию)
-
-Пока на **443** нет TLS, запросы на `https://IP` падают или помечаются как «заблокированные». Раньше у вас, скорее всего, уже лежали сертификаты в `./certs` и был включён SSL-блок.
-
-**Вариант A — самоподписанный сертификат (доступ по IP, без домена)**
-
-На машине с OpenSSL (на сервере в каталоге MySite):
-
-```bash
-chmod +x ./scripts/generate-selfsigned-certs.sh
-./scripts/generate-selfsigned-certs.sh ВАШ_ПУБЛИЧНЫЙ_IP
-```
-
-Появятся `certs/fullchain.pem` и `certs/privkey.pem`. В текущем `nginx/conf.d/default.conf` блок **443 уже включён** — после появления файлов:
-
-```bash
-docker compose restart nginx
-```
-
-В браузере будет предупреждение о недоверенном сертификате — один раз «Дополнительно → перейти» (или импорт исключения). Так `https://IP` снова начинает работать.
-
-**Вариант B — Let's Encrypt (нужен домен)**
-
-Положите выданные LE файлы в те же пути `certs/fullchain.pem` и `certs/privkey.pem`, перезапустите nginx. Тогда предупреждений не будет.
-
-**Принудительный переход с HTTP на HTTPS**
-
-В `nginx/conf.d/default.conf` в блоке `server` на порту **80** раскомментируйте строку:
-
-`# return 301 https://$host$request_uri;`
-
-(только когда 443 уже настроен и проверен.)
+Nginx вынесен в соседний репозиторий [`../gogol_nginx`](../gogol_nginx): порты **80/443**, TLS, прокси на `mysite-app`, gogol dashboard и movement-studio. Инструкции по сертификатам и запуску — в README того проекта.
 
 ## Полезные примечания
 

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Icon } from "@iconify/vue";
 import { usePortfolioProject } from "~/entities/portfolio";
+import { BTN_GHOST_SM, PAGE_TOP, SECTION } from "~/shared/config/layout";
 import { PortfolioProjectDetail } from "~/widgets/portfolio-detail";
 
 const route = useRoute();
@@ -22,15 +23,14 @@ useSeoMeta({
 </script>
 
 <template>
-  <section class="space-y-8">
-    <NuxtLink
-      to="/#portfolio"
-      class="inline-flex items-center gap-2 rounded-lg border border-zinc-700 px-4 py-2 text-md text-zinc-300 transition hover:bg-zinc-800"
-    >
+  <section :class="[SECTION, PAGE_TOP]">
+    <NuxtLink to="/#portfolio" :class="[BTN_GHOST_SM, 'w-fit']">
       <Icon icon="material-symbols:arrow-back-rounded" />
       Назад к портфолио
     </NuxtLink>
 
-    <PortfolioProjectDetail v-if="project" :project="project" />
+    <div v-if="project" class="mt-8 w-full">
+      <PortfolioProjectDetail :project="project" />
+    </div>
   </section>
 </template>

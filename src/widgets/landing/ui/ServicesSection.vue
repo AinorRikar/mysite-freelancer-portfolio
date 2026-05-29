@@ -1,44 +1,50 @@
 <script setup lang="ts">
 import { useSiteStore } from "~/entities/site";
-import { HoverLift } from "~/shared/ui/hover-lift";
+import { PAPER_CARD, PAPER_LINK, SECTION } from "~/shared/config/layout";
 import { RevealOnScroll } from "~/shared/ui/reveal-on-scroll";
+import { TiltCard } from "~/shared/ui/tilt-card";
 
 const site = useSiteStore();
 </script>
 
 <template>
-  <section id="services" class="scroll-mt-28 min-h-[78vh] space-y-8 py-8">
-    <RevealOnScroll>
-      <h2 class="text-4xl font-bold">Услуги</h2>
-      <p class="mt-4 max-w-4xl text-lg text-zinc-300">
-        Форматы сотрудничества для бизнеса, агентств и стартапов.
+  <section id="services" :class="[SECTION, 'border-t border-zinc-800/50']">
+    <RevealOnScroll class="w-full">
+      <p class="text-sm font-medium uppercase tracking-[0.16em] text-accent sm:text-base">
+        Услуги
+      </p>
+      <h2 class="mt-2 font-serif text-4xl font-semibold tracking-tight text-zinc-50 sm:text-5xl">
+        Форматы работы
+      </h2>
+      <p class="mt-3 max-w-2xl text-lg leading-relaxed text-zinc-400 sm:text-xl">
+        Сотрудничество для бизнеса, агентств и стартапов.
       </p>
 
-      <div class="mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <HoverLift
+      <div
+        class="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 xl:grid-cols-3"
+      >
+        <TiltCard
           v-for="service in site.services"
-          :key="service.title"
+          :key="service.slug"
           tag="article"
-          class="flex h-full flex-col rounded-2xl border border-zinc-800 bg-zinc-900/80 p-8"
+          :class="[PAPER_CARD, 'flex h-full flex-col p-5 sm:p-6']"
         >
-          <div class="space-y-3">
-            <div class="rounded-xl border border-cyan-400/25 bg-zinc-950/80 p-5 shadow-[0_10px_24px_rgba(6,182,212,0.16)]">
-              <h3 class="text-2xl font-semibold">{{ service.title }}</h3>
-            </div>
-          </div>
-          <p class="mt-5 text-lg leading-relaxed text-zinc-300">{{ service.description }}</p>
-          <div class="mt-auto space-y-3 pt-5">
-            <div class="rounded-xl border border-cyan-400/30 bg-zinc-950/90 p-4 shadow-[0_10px_24px_rgba(6,182,212,0.2)]">
-              <p class="text-right text-xl font-semibold text-cyan-300">{{ service.price }}</p>
-            </div>
+          <h3 class="text-xl font-semibold leading-snug text-paper-ink">
+            {{ service.title }}
+          </h3>
+          <p class="mt-3 flex-1 text-base leading-relaxed text-paper-mutedInk">
+            {{ service.description }}
+          </p>
+          <div class="mt-5 border-t border-paper-border pt-4">
+            <p class="text-base font-semibold text-paper-ink">{{ service.price }}</p>
             <NuxtLink
               :to="`/services/${service.slug}`"
-              class="inline-flex w-full items-center justify-center rounded-xl border border-cyan-500/40 bg-cyan-500/10 px-4 py-3 text-sm font-medium text-cyan-300 transition hover:bg-cyan-500/20"
+              :class="[PAPER_LINK, 'mt-2 inline-flex']"
             >
-              Подробнее об услуге
+              Подробнее →
             </NuxtLink>
           </div>
-        </HoverLift>
+        </TiltCard>
       </div>
     </RevealOnScroll>
   </section>

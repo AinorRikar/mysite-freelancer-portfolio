@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { ref } from "vue";
 import { useSiteStore } from "~/entities/site";
 import { HomeGalleryAboutPanel } from "~/features/home-gallery-about";
 import { HomeGalleryMainPanel } from "~/features/home-gallery-main";
-import { RevealOnScroll } from "~/shared/ui/reveal-on-scroll";
+import { HeroPaperBento } from "~/features/home-hero-bento";
+import { LAYOUT_X } from "~/shared/config/layout";
 
 const site = useSiteStore();
 
@@ -12,114 +13,60 @@ const tabs = [
   { id: "about", label: "Обо мне" }
 ] as const;
 
-const activeSlide = ref(0);
-const sliderRoot = ref<HTMLElement | null>(null);
-const isDragging = ref(false);
-const startX = ref(0);
-const dragOffset = ref(0);
-
-const activateSlide = (index: number) => {
-  activeSlide.value = index;
-  dragOffset.value = 0;
-};
-
-const isInteractiveTarget = (target: EventTarget | null) => {
-  if (!(target instanceof Element)) {
-    return false;
-  }
-  return Boolean(target.closest("a, button, input, textarea, select, label"));
-};
-
-const handlePointerDown = (event: PointerEvent) => {
-  if (!sliderRoot.value) {
-    return;
-  }
-  if (isInteractiveTarget(event.target)) {
-    return;
-  }
-  isDragging.value = true;
-  startX.value = event.clientX;
-  dragOffset.value = 0;
-  sliderRoot.value.setPointerCapture(event.pointerId);
-};
-
-const handlePointerMove = (event: PointerEvent) => {
-  if (!isDragging.value) {
-    return;
-  }
-  dragOffset.value = event.clientX - startX.value;
-};
-
-const finishDrag = () => {
-  if (!isDragging.value || !sliderRoot.value) {
-    return;
-  }
-
-  const threshold = Math.max(60, sliderRoot.value.clientWidth * 0.15);
-  if (dragOffset.value <= -threshold && activeSlide.value < tabs.length - 1) {
-    activeSlide.value += 1;
-  } else if (dragOffset.value >= threshold && activeSlide.value > 0) {
-    activeSlide.value -= 1;
-  }
-
-  isDragging.value = false;
-  dragOffset.value = 0;
-};
-
-const trackStyle = computed(() => {
-  const baseOffset = -activeSlide.value * 100;
-  return {
-    transform: `translateX(calc(${baseOffset}% + ${dragOffset.value}px))`,
-    transition: isDragging.value ? "none" : "transform 320ms ease"
-  };
-});
+const activeTab = ref<(typeof tabs)[number]["id"]>("main");
 </script>
 
 <template>
-  <section id="home" class="scroll-mt-28 min-h-[78vh] py-8">
-    <RevealOnScroll>
+  <section id="home" class="relative w-full scroll-mt-24 overflow-hidden">
+    <div
+      class="absolute inset-0 bg-[#121216] bg-hero-cinematic"
+      aria-hidden="true"
+    />
+
+    <div
+      :class="[
+        LAYOUT_X,
+        'relative z-10 w-full pt-[4.5rem] pb-7 sm:pb-8 lg:pt-20 lg:pb-9'
+      ]"
+    >
       <div
-        class="overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900/60"
+        class="grid w-full grid-cols-1 items-start gap-10 lg:grid-cols-hero lg:gap-10 xl:gap-14"
       >
-        <div class="flex justify-center border-b border-zinc-800/90 px-4 py-4">
-          <div class="inline-flex items-center gap-3 rounded-lg bg-zinc-900/35 px-4 py-2">
-            <template v-for="(tab, index) in tabs" :key="tab.id">
-              <button
-                type="button"
-                class="rounded-md px-1 py-0.5 text-lg font-medium transition sm:text-xl"
-                :class="
-                  activeSlide === index
-                    ? 'text-cyan-300'
-                    : 'text-zinc-400 hover:text-zinc-300'
-                "
-                @click="activateSlide(index)"
-              >
-                {{ tab.label }}
-              </button>
-              <span v-if="index < tabs.length - 1" class="select-none text-zinc-600">|</span>
-            </template>
+        <div class="min-w-0">
+          <div
+            class="mb-5 flex gap-1 sm:mb-6"
+            role="tablist"
+            aria-label="Разделы главной"
+          >
+            <button
+              v-for="tab in tabs"
+              :key="tab.id"
+              type="button"
+              role="tab"
+              :aria-selected="activeTab === tab.id"
+              class="rounded-md px-2 py-1 text-base text-zinc-500 transition hover:text-zinc-300"
+              :class="{ 'bg-white/5 text-zinc-200': activeTab === tab.id }"
+              @click="activeTab = tab.id"
+            >
+              {{ tab.label }}
+            </button>
           </div>
+
+          <HomeGalleryMainPanel
+            v-show="activeTab === 'main'"
+            :is-active="activeTab === 'main'"
+            :owner="site.owner"
+          />
+          <HomeGalleryAboutPanel
+            v-show="activeTab === 'about'"
+            :about-text="site.aboutText"
+          />
         </div>
 
-        <div
-          ref="sliderRoot"
-          class="touch-pan-y select-none"
-          @pointerdown="handlePointerDown"
-          @pointermove="handlePointerMove"
-          @pointerup="finishDrag"
-          @pointercancel="finishDrag"
-          @pointerleave="finishDrag"
-        >
-          <div class="flex" :style="trackStyle">
-            <HomeGalleryMainPanel
-              :is-active="activeSlide === 0"
-              :owner="site.owner"
-              :hero-stats="site.heroStats"
-            />
-            <HomeGalleryAboutPanel :about-text="site.aboutText" />
-          </div>
+        <div class="min-w-0 lg:border-l lg:border-zinc-800 lg:pl-8 xl:pl-10">
+          <HeroPaperBento :hero-stats="site.heroStats" />
         </div>
       </div>
-    </RevealOnScroll>
+    </div>
   </section>
 </template>

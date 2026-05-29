@@ -1,10 +1,7 @@
 <script setup lang="ts">
 import { Icon } from "@iconify/vue";
-import { computed, ref, unref, watch } from "vue";
-import type { ComputedRef, Ref } from "vue";
-import { HoverLift } from "~/shared/ui/hover-lift";
-
-type HeroStat = { label: string; value: string };
+import { ref, watch } from "vue";
+import { BTN_GHOST, BTN_PRIMARY } from "~/shared/config/layout";
 
 const props = withDefaults(
   defineProps<{
@@ -14,93 +11,51 @@ const props = withDefaults(
       role: string;
       bio: string;
     };
-    heroStats: HeroStat[] | Ref<HeroStat[]> | ComputedRef<HeroStat[]>;
   }>(),
   { isActive: true }
 );
 
-const normalizedHeroStats = computed(() => unref(props.heroStats));
-
 const isEnterActive = ref(props.isActive);
-
-const playEnterAnimation = () => {
-  isEnterActive.value = false;
-  if (import.meta.client) {
-    requestAnimationFrame(() => {
-      isEnterActive.value = true;
-    });
-    return;
-  }
-  isEnterActive.value = true;
-};
 
 watch(
   () => props.isActive,
   (active) => {
-    if (active) {
-      playEnterAnimation();
-      return;
-    }
-    isEnterActive.value = false;
+    isEnterActive.value = active;
   },
   { immediate: true }
 );
-
-const statDelayClass = (index: number) => {
-  const delays = ["delay-4", "delay-5", "delay-6"] as const;
-  return delays[index] ?? "delay-6";
-};
 </script>
 
 <template>
-  <div
-    class="w-full flex-shrink-0 space-y-8 p-6 lg:p-8"
-    :class="{ 'hero-enter-active': isEnterActive }"
-  >
-    <div class="space-y-6">
-      <p
-        class="hero-enter-item delay-0 inline-flex rounded-full border border-cyan-500/40 px-4 py-1.5 text-sm text-green-300"
-      >
-        <Icon icon="material-symbols:verified-outline-rounded" class="mr-1 text-base" />
-        Доступен для новых проектов
-      </p>
-      <h1 class="text-5xl font-bold tracking-tight sm:text-6xl">
-        <span class="hero-enter-item delay-1 block">{{ owner.name }}</span>
-        <span class="hero-enter-item delay-1b mt-1 block text-cyan-400 sm:mt-0 sm:inline">
-          {{ owner.role }}
-        </span>
-      </h1>
-      <p class="hero-enter-item delay-2 max-w-3xl text-xl text-zinc-300">
-        {{ owner.bio }}
-      </p>
-      <div class="hero-enter-item delay-3 flex flex-wrap justify-center gap-4">
-        <NuxtLink
-          to="/#services"
-          class="inline-flex items-center gap-2 rounded-md bg-cyan-500 px-6 py-3 text-lg font-medium text-zinc-950 hover:bg-cyan-400"
-        >
-          <Icon icon="material-symbols:design-services-rounded" />
-          Услуги
-        </NuxtLink>
-        <NuxtLink
-          to="/#portfolio"
-          class="inline-flex items-center gap-2 rounded-md border border-zinc-700 px-6 py-3 text-lg font-medium hover:bg-zinc-800"
-        >
-          <Icon icon="material-symbols:work-history-outline-rounded" />
-          Портфолио
-        </NuxtLink>
-      </div>
-    </div>
+  <div :class="{ 'hero-enter-active': isEnterActive }">
+    <p
+      class="hero-enter-item inline-flex items-center gap-2 rounded-full border border-zinc-700 bg-zinc-900/50 px-3 py-1 text-sm font-medium text-zinc-300"
+    >
+      <span class="h-1.5 w-1.5 shrink-0 rounded-full bg-accent" aria-hidden="true" />
+      Доступен для новых проектов
+    </p>
 
-    <div class="grid gap-4 md:grid-cols-3">
-      <HoverLift
-        v-for="(stat, index) in normalizedHeroStats"
-        :key="stat.label"
-        class="hero-enter-item flex min-h-[140px] flex-col items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900 p-6 text-center"
-        :class="statDelayClass(index)"
-      >
-        <p class="text-4xl font-semibold text-cyan-300">{{ stat.value }}</p>
-        <p class="mt-1 text-base text-zinc-400">{{ stat.label }}</p>
-      </HoverLift>
+    <h1
+      class="hero-enter-item mt-4 font-serif text-4xl font-semibold leading-tight text-white sm:mt-5 sm:text-6xl lg:text-7xl"
+    >
+      {{ owner.name }}
+    </h1>
+    <p class="hero-enter-item mt-2 text-lg font-medium text-accent sm:text-xl">
+      {{ owner.role }}
+    </p>
+
+    <p class="hero-enter-item mt-4 max-w-md text-base leading-relaxed text-zinc-400 sm:text-lg">
+      {{ owner.bio }}
+    </p>
+
+    <div class="hero-enter-item mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+      <NuxtLink to="/#services" :class="[BTN_PRIMARY, 'w-full sm:w-auto']">
+        <Icon icon="material-symbols:design-services-rounded" class="text-xl" />
+        Услуги
+      </NuxtLink>
+      <NuxtLink to="/#portfolio" :class="[BTN_GHOST, 'w-full sm:w-auto']">
+        Портфолио
+      </NuxtLink>
     </div>
   </div>
 </template>
@@ -108,50 +63,30 @@ const statDelayClass = (index: number) => {
 <style scoped>
 .hero-enter-item {
   opacity: 0;
-  transform: translateY(1.25rem);
+  transform: translateY(0.5rem);
 }
 
 .hero-enter-active .hero-enter-item {
-  animation: hero-fade-up 0.7s ease-out both;
+  animation: hero-in 0.5s ease-out forwards;
 }
 
-.hero-enter-active .delay-0 {
+.hero-enter-active .hero-enter-item:nth-child(1) {
   animation-delay: 0ms;
 }
-
-.hero-enter-active .delay-1 {
+.hero-enter-active .hero-enter-item:nth-child(2) {
+  animation-delay: 60ms;
+}
+.hero-enter-active .hero-enter-item:nth-child(3) {
   animation-delay: 100ms;
 }
-
-.hero-enter-active .delay-1b {
-  animation-delay: 150ms;
+.hero-enter-active .hero-enter-item:nth-child(4) {
+  animation-delay: 140ms;
+}
+.hero-enter-active .hero-enter-item:nth-child(5) {
+  animation-delay: 180ms;
 }
 
-.hero-enter-active .delay-2 {
-  animation-delay: 200ms;
-}
-
-.hero-enter-active .delay-3 {
-  animation-delay: 300ms;
-}
-
-.hero-enter-active .delay-4 {
-  animation-delay: 450ms;
-}
-
-.hero-enter-active .delay-5 {
-  animation-delay: 550ms;
-}
-
-.hero-enter-active .delay-6 {
-  animation-delay: 650ms;
-}
-
-@keyframes hero-fade-up {
-  from {
-    opacity: 0;
-    transform: translateY(1.25rem);
-  }
+@keyframes hero-in {
   to {
     opacity: 1;
     transform: translateY(0);

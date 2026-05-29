@@ -89,12 +89,18 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="animated-bg min-h-screen text-zinc-100">
-    <SiteHeader />
-    <main class="mx-auto w-full max-w-7xl px-4 py-14 sm:px-8">
-      <NuxtPage />
-    </main>
-    <ScrollToTopButton />
-    <SiteFooter />
+  <div class="relative flex min-h-screen flex-col bg-graphite text-zinc-100">
+    <div
+      class="pointer-events-none fixed inset-0 z-0 bg-noise opacity-[0.07]"
+      aria-hidden="true"
+    />
+    <div class="relative z-10 flex min-h-screen flex-col">
+      <SiteHeader />
+      <main class="w-full flex-1">
+        <NuxtPage />
+      </main>
+      <ScrollToTopButton />
+      <SiteFooter />
+    </div>
   </div>
 </template>

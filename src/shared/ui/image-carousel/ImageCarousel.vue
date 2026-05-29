@@ -148,7 +148,7 @@ watch(isLightboxOpen, (open) => {
 </script>
 
 <template>
-  <div class="relative overflow-hidden rounded-xl border border-zinc-700 bg-zinc-950">
+  <div class="relative overflow-hidden rounded-lg border border-paper-border bg-paper-muted">
     <button
       v-if="currentImage && lightbox"
       type="button"
@@ -180,7 +180,7 @@ watch(isLightboxOpen, (open) => {
       class="absolute left-2 top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-zinc-900/50 text-white backdrop-blur-sm transition hover:bg-zinc-900/70"
       @click="onPrevClick"
     >
-      <Icon icon="material-symbols:chevron-left-rounded" class="text-xl" />
+      <Icon icon="material-symbols:chevron-left-rounded" class="text-2xl" />
     </button>
 
     <button
@@ -190,7 +190,7 @@ watch(isLightboxOpen, (open) => {
       class="absolute right-2 top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-zinc-900/50 text-white backdrop-blur-sm transition hover:bg-zinc-900/70"
       @click="onNextClick"
     >
-      <Icon icon="material-symbols:chevron-right-rounded" class="text-xl" />
+      <Icon icon="material-symbols:chevron-right-rounded" class="text-2xl" />
     </button>
 
     <div
@@ -200,7 +200,7 @@ watch(isLightboxOpen, (open) => {
     >
       <div
         :key="progressKey"
-        class="carousel-progress-bar h-full w-full origin-left bg-cyan-400/90"
+        class="carousel-progress-bar h-full w-full origin-left bg-zinc-400/80"
         :style="{ animationDuration: `${intervalMs}ms` }"
       />
     </div>
@@ -221,7 +221,7 @@ watch(isLightboxOpen, (open) => {
         class="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-zinc-900/80 text-white transition hover:bg-zinc-800"
         @click="closeLightbox"
       >
-        <Icon icon="material-symbols:close-rounded" class="text-2xl" />
+        <Icon icon="material-symbols:close-rounded" class="text-3xl" />
       </button>
 
       <button
@@ -231,7 +231,7 @@ watch(isLightboxOpen, (open) => {
         class="absolute left-4 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-zinc-900/70 text-white transition hover:bg-zinc-800"
         @click="onLightboxPrev"
       >
-        <Icon icon="material-symbols:chevron-left-rounded" class="text-3xl" />
+        <Icon icon="material-symbols:chevron-left-rounded" class="text-4xl" />
       </button>
 
       <img
@@ -249,7 +249,7 @@ watch(isLightboxOpen, (open) => {
         class="absolute right-4 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-zinc-900/70 text-white transition hover:bg-zinc-800"
         @click="onLightboxNext"
       >
-        <Icon icon="material-symbols:chevron-right-rounded" class="text-3xl" />
+        <Icon icon="material-symbols:chevron-right-rounded" class="text-4xl" />
       </button>
     </div>
   </Teleport>

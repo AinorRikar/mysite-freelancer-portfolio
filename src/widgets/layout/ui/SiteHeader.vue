@@ -1,28 +1,47 @@
 <script setup lang="ts">
 import { Icon } from "@iconify/vue";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { useSiteStore } from "~/entities/site";
+import { LAYOUT_X } from "~/shared/config/layout";
 
 const site = useSiteStore();
+const route = useRoute();
 const isMobileMenuOpen = ref(false);
 
+const isHome = computed(() => route.path === "/");
+
 const links = [
-  { to: "/#home", label: "Главная", icon: "material-symbols:home-outline-rounded" },
-  { to: "/#services", label: "Услуги", icon: "material-symbols:design-services-rounded" },
-  { to: "/#portfolio", label: "Портфолио", icon: "material-symbols:cases-rounded" }
+  { to: "/#home", label: "Главная" },
+  { to: "/#services", label: "Услуги" },
+  { to: "/#portfolio", label: "Портфолио" }
 ];
+
+const headerClass = computed(() =>
+  [
+    "fixed top-0 z-50 w-full border-b transition-colors duration-200",
+    isHome.value
+      ? "border-zinc-800/30 bg-graphite-deep/50 backdrop-blur-md"
+      : "border-zinc-800/80 bg-graphite-deep/90 backdrop-blur-md"
+  ].join(" ")
+);
+
+const navLinkClass =
+  "text-base font-medium text-zinc-400 transition hover:text-white";
 </script>
 
 <template>
-  <header class="sticky top-0 z-50 border-b border-zinc-800 bg-zinc-900/70 backdrop-blur">
-    <div class="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
-      <NuxtLink to="/" class="flex flex-col leading-tight">
-        <span class="text-lg font-semibold tracking-tight">{{ site.owner.name }}</span>
-        <span class="text-xs text-zinc-400">{{ site.owner.role }}</span>
+  <header :class="headerClass">
+    <div :class="[LAYOUT_X, 'flex w-full items-center justify-between gap-4 py-3.5 sm:py-4']">
+      <NuxtLink to="/" class="min-w-0 flex-shrink leading-tight">
+        <span class="block truncate font-serif text-lg font-semibold text-zinc-50 sm:text-xl">
+          {{ site.owner.name }}
+        </span>
+        <span class="block truncate text-sm text-zinc-500">{{ site.owner.role }}</span>
       </NuxtLink>
+
       <button
         type="button"
-        class="inline-flex items-center justify-center rounded-md border border-zinc-700 bg-zinc-900/45 p-2 text-zinc-200 transition hover:bg-zinc-700/45 hover:text-white sm:hidden"
+        class="inline-flex flex-shrink-0 items-center justify-center rounded-lg border border-zinc-700 p-2 text-zinc-300 transition hover:border-zinc-600 hover:text-zinc-100 lg:hidden"
         :aria-expanded="isMobileMenuOpen"
         aria-label="Открыть меню"
         @click="isMobileMenuOpen = !isMobileMenuOpen"
@@ -36,33 +55,34 @@ const links = [
           class="text-2xl"
         />
       </button>
-      <nav class="hidden gap-4 text-base text-zinc-200 sm:flex">
+
+      <nav class="hidden items-center gap-6 lg:flex" aria-label="Основная навигация">
         <NuxtLink
           v-for="item in links"
           :key="item.to"
           :to="item.to"
-          class="inline-flex items-center gap-2 rounded-md bg-zinc-900/35 px-4 py-2 font-medium transition hover:bg-zinc-700/45 hover:text-white"
-          active-class="bg-zinc-700/55 text-white"
+          :class="navLinkClass"
+          active-class="!text-accent"
         >
-          <Icon :icon="item.icon" class="text-lg" />
           {{ item.label }}
         </NuxtLink>
       </nav>
     </div>
+
     <nav
       v-if="isMobileMenuOpen"
-      class="border-t border-zinc-800 bg-zinc-900/95 px-4 py-3 text-zinc-200 sm:hidden"
+      class="border-t border-zinc-800/80 lg:hidden"
+      aria-label="Мобильная навигация"
     >
-      <div class="mx-auto flex w-full max-w-6xl flex-col gap-2">
+      <div :class="[LAYOUT_X, 'flex flex-col gap-3 py-4']">
         <NuxtLink
           v-for="item in links"
           :key="`mobile-${item.to}`"
           :to="item.to"
-          class="inline-flex items-center gap-2 rounded-md bg-zinc-900/35 px-4 py-2 font-medium transition hover:bg-zinc-700/45 hover:text-white"
-          active-class="bg-zinc-700/55 text-white"
+          :class="navLinkClass"
+          active-class="!text-accent"
           @click="isMobileMenuOpen = false"
         >
-          <Icon :icon="item.icon" class="text-lg" />
           {{ item.label }}
         </NuxtLink>
       </div>

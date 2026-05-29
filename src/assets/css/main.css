@@ -2,31 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
-html,
-body {
-  margin: 0;
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  scroll-behavior: smooth;
-}
-
-#__nuxt {
-  min-height: 100vh;
-}
-
-.animated-bg {
-  background: linear-gradient(120deg, #000000, #11051f, #1a092e, #11051f, #000000);
-  background-size: 260% 260%;
-  animation: darkGradientShift 15s ease infinite;
-}
-
-@keyframes darkGradientShift {
-  0% {
-    background-position: 0% 50%;
+@layer base {
+  html,
+  body {
+    margin: 0;
+    @apply bg-graphite font-sans text-lg text-zinc-100 antialiased;
+    scroll-behavior: smooth;
   }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
+
+  #__nuxt {
+    min-height: 100dvh;
   }
 }

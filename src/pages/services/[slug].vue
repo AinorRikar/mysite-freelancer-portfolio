@@ -2,6 +2,13 @@
 import { Icon } from "@iconify/vue";
 import { ServiceOrderAction } from "~/features/service-order";
 import { useSiteStore } from "~/entities/site";
+import {
+  BTN_GHOST_SM,
+  PAGE_TOP,
+  PAPER_CARD,
+  PAPER_LABEL,
+  SECTION
+} from "~/shared/config/layout";
 
 const route = useRoute();
 const site = useSiteStore();
@@ -21,39 +28,39 @@ useSeoMeta({
 </script>
 
 <template>
-  <section class="space-y-8">
-    <NuxtLink to="/#services" class="inline-flex items-center gap-2 rounded-lg border border-zinc-700 px-4 py-2 text-md text-zinc-300 transition hover:bg-zinc-800">
+  <section :class="[SECTION, PAGE_TOP]">
+    <NuxtLink to="/#services" :class="[BTN_GHOST_SM, 'w-fit']">
       <Icon icon="material-symbols:arrow-back-rounded" />
       Назад к услугам
     </NuxtLink>
 
-    <article class="space-y-6 rounded-2xl border border-zinc-800 bg-zinc-900/80 p-8">
-      <div class="space-y-3">
-        <h1 class="text-4xl font-bold">{{ service?.title }}</h1>
-        <p class="text-xl text-cyan-300">{{ service?.price }}</p>
-      </div>
+    <article v-if="service" :class="[PAPER_CARD, 'mt-8 w-full p-5 sm:p-7 lg:p-8']">
+      <p :class="PAPER_LABEL">Услуга</p>
+      <h1 class="mt-2 font-serif text-4xl font-semibold text-paper-ink sm:text-5xl">
+        {{ service.title }}
+      </h1>
+      <p class="mt-2 text-xl font-medium text-paper-ink">{{ service.price }}</p>
 
-      <p class="max-w-4xl text-lg leading-relaxed text-zinc-300">
-        {{ service?.details }}
+      <p class="mt-6 text-lg leading-relaxed text-paper-mutedInk sm:text-xl">
+        {{ service.details }}
       </p>
 
-      <div class="rounded-2xl border border-cyan-500/30 bg-zinc-950/70 p-6 shadow-[0_16px_40px_rgba(6,182,212,0.18)]">
-        <h2 class="inline-flex items-center gap-2 text-2xl font-semibold text-cyan-300">
-          <Icon icon="material-symbols:deployed-code-outline" />
-          Примерный стек технологий
-        </h2>
-        <div class="mt-4 flex flex-wrap gap-3">
-          <div
-            v-for="tech in service?.techStack"
+      <div class="mt-8 border-t border-paper-border pt-6">
+        <h2 class="text-xl font-semibold text-accent">Стек технологий</h2>
+        <div class="mt-4 flex flex-wrap gap-2">
+          <span
+            v-for="tech in service.techStack"
             :key="tech"
-            class="inline-flex w-auto items-center rounded-xl border border-lime-300/50 bg-lime-300/20 px-4 py-2 text-sm font-medium text-lime-100 shadow-[0_8px_22px_rgba(132,204,22,0.22)]"
+            class="inline-flex rounded-md border border-paper-border bg-paper-muted px-2.5 py-1 text-sm text-paper-ink"
           >
             {{ tech }}
-          </div>
+          </span>
         </div>
       </div>
 
-      <ServiceOrderAction :service-title="service?.title || 'Услуга'" />
+      <div class="mt-8">
+        <ServiceOrderAction :service-title="service.title" />
+      </div>
     </article>
   </section>
 </template>

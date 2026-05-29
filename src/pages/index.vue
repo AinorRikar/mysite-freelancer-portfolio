@@ -5,7 +5,7 @@ useSeoMeta({ title: "Главная" });
 </script>
 
 <template>
-  <div class="space-y-28">
+  <div class="w-full">
     <HomeSection />
     <ServicesSection />
     <PortfolioSection />

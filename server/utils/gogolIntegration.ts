@@ -7,26 +7,26 @@ export const mintIntegrationToken = (secret: string) =>
     algorithm: "HS256"
   });
 
-const resolveIntegrationConfig = () => {
+export const getIntegrationConfig = () => {
   const config = useRuntimeConfig();
 
   const integrationSecret =
-    config.integrationSecret ||
-    process.env.NUXT_INTEGRATION_SECRET ||
     process.env.INTEGRATION_SECRET ||
+    process.env.NUXT_INTEGRATION_SECRET ||
+    config.integrationSecret ||
     "";
 
   const gogolDashboardBaseUrl =
-    config.gogolDashboardBaseUrl ||
-    process.env.NUXT_GOGOL_DASHBOARD_BASE_URL ||
     process.env.GOGOL_DASHBOARD_BASE_URL ||
+    process.env.NUXT_GOGOL_DASHBOARD_BASE_URL ||
+    config.gogolDashboardBaseUrl ||
     "http://gogol-dashboard:3000/dashboard";
 
   return { integrationSecret, gogolDashboardBaseUrl };
 };
 
 export const fetchGogolIntegration = async <T>(path: string): Promise<T> => {
-  const { integrationSecret, gogolDashboardBaseUrl } = resolveIntegrationConfig();
+  const { integrationSecret, gogolDashboardBaseUrl } = getIntegrationConfig();
 
   if (!integrationSecret) {
     throw createError({

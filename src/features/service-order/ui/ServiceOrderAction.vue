@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { Icon } from "@iconify/vue";
 import { ContactForm } from "~/features/contact-form";
+import { BTN_PRIMARY, PAPER_CARD, PAPER_LABEL } from "~/shared/config/layout";
 
-const props = defineProps<{
+defineProps<{
   serviceTitle: string;
 }>();
 
-// Modal state lives inside the feature so pages stay declarative.
 const isModalOpen = ref(false);
 
 const openModal = () => {
@@ -20,11 +20,7 @@ const closeModal = () => {
 
 <template>
   <div>
-    <button
-      type="button"
-      class="inline-flex items-center gap-2 rounded-xl bg-cyan-500 px-6 py-3 text-base font-semibold text-zinc-950 transition hover:bg-cyan-400"
-      @click="openModal"
-    >
+    <button type="button" :class="BTN_PRIMARY" @click="openModal">
       <Icon icon="material-symbols:shopping-cart-checkout-rounded" />
       Заказать
     </button>
@@ -32,18 +28,28 @@ const closeModal = () => {
     <Teleport to="body">
       <div
         v-if="isModalOpen"
-        class="fixed inset-0 z-[80] flex items-center justify-center bg-black/70 p-4"
+        class="fixed inset-0 z-[80] flex items-end justify-center bg-black/75 p-4 sm:items-center"
         @click.self="closeModal"
       >
-        <div class="w-full max-w-xl rounded-2xl border border-zinc-700 bg-zinc-950 p-5 shadow-2xl">
-          <div class="mb-4 flex items-center justify-between">
-            <h3 class="text-xl font-semibold text-cyan-500">Заявка на услугу:<br>{{ serviceTitle }}</h3>
+        <div
+          :class="[PAPER_CARD, 'max-h-[90dvh] w-full max-w-xl overflow-y-auto p-5 sm:p-6']"
+          role="dialog"
+          aria-modal="true"
+        >
+          <div class="mb-4 flex items-start justify-between gap-4">
+            <div>
+              <p :class="PAPER_LABEL">Заявка</p>
+              <h3 class="mt-1 font-serif text-xl text-paper-ink sm:text-2xl">
+                {{ serviceTitle }}
+              </h3>
+            </div>
             <button
               type="button"
-              class="inline-flex items-center gap-1 rounded-md border border-zinc-700 px-3 py-1 text-sm text-zinc-300 hover:bg-zinc-800"
+              class="rounded-lg border border-paper-border p-2 text-paper-mutedInk hover:text-paper-ink"
+              aria-label="Закрыть"
               @click="closeModal"
             >
-              <Icon icon="material-symbols:close-rounded" />
+              <Icon icon="material-symbols:close-rounded" class="text-2xl" />
             </button>
           </div>
           <ContactForm :initial-topic="`Заказать ${serviceTitle}`" />

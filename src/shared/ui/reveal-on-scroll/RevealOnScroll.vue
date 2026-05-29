@@ -1,21 +1,34 @@
 <script setup lang="ts">
 const root = ref<HTMLElement | null>(null);
 const isVisible = ref(false);
+const hasRevealed = ref(false);
 
 onMounted(() => {
   if (!root.value) {
     return;
   }
 
-  // Keep animation reversible: element appears on enter and hides on leave.
+  const reveal = () => {
+    hasRevealed.value = true;
+    isVisible.value = true;
+  };
+
   const observer = new IntersectionObserver(
     (entries) => {
-      isVisible.value = Boolean(entries[0]?.isIntersecting);
+      if (entries[0]?.isIntersecting) {
+        reveal();
+      }
     },
-    { threshold: 0.2 }
+    { threshold: 0.08, rootMargin: "0px 0px -5% 0px" }
   );
 
   observer.observe(root.value);
+
+  // Уже в viewport при загрузке (например, после якоря #portfolio)
+  const rect = root.value.getBoundingClientRect();
+  if (rect.top < window.innerHeight && rect.bottom > 0) {
+    reveal();
+  }
 
   onBeforeUnmount(() => {
     observer.disconnect();
@@ -27,7 +40,11 @@ onMounted(() => {
   <div
     ref="root"
     class="transition-all duration-700 ease-out will-change-transform"
-    :class="isVisible ? 'translate-x-0 opacity-100' : '-translate-x-10 opacity-0'"
+    :class="
+      isVisible || hasRevealed
+        ? 'translate-x-0 opacity-100'
+        : 'translate-x-0 opacity-0 sm:-translate-x-4'
+    "
   >
     <slot />
   </div>

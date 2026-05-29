@@ -1,84 +1,94 @@
 <script setup lang="ts">
 import { formatPortfolioMeta, usePortfolio } from "~/entities/portfolio";
-import { HoverLift } from "~/shared/ui/hover-lift";
+import { PAPER_CARD, PAPER_LINK, SECTION } from "~/shared/config/layout";
 import { ImageCarousel } from "~/shared/ui/image-carousel";
 import { RevealOnScroll } from "~/shared/ui/reveal-on-scroll";
+import { TiltCard } from "~/shared/ui/tilt-card";
 
 const { data: projects, pending, error } = await usePortfolio();
 
+const galleryLiftStyle = (tilt: {
+  canTilt: boolean;
+  isHovering: boolean;
+  floatX: number;
+  floatY: number;
+}) => {
+  if (!tilt.canTilt || !tilt.isHovering) {
+    return undefined;
+  }
 
+  return {
+    transform: `translate(${tilt.floatX}px, ${tilt.floatY - 8}px) scale(1.015)`
+  };
+};
 </script>
 
 <template>
-  <section id="portfolio" class="scroll-mt-28 min-h-[78vh] space-y-8 py-8">
-    <RevealOnScroll>
-      <h2 class="text-4xl font-bold">Портфолио</h2>
-      <p class="mt-4 max-w-4xl text-lg text-zinc-300">
-        Реальные задачи и измеримые результаты проектов.
+  <section id="portfolio" :class="[SECTION, 'border-t border-zinc-800/50']">
+    <RevealOnScroll class="w-full">
+      <p class="text-sm font-medium uppercase tracking-[0.16em] text-accent sm:text-base">
+        Портфолио
+      </p>
+      <h2 class="mt-2 font-serif text-4xl font-semibold tracking-tight text-zinc-50 sm:text-5xl">
+        Избранные проекты
+      </h2>
+      <p class="mt-3 max-w-2xl text-lg leading-relaxed text-zinc-400 sm:text-xl">
+        Реальные задачи и измеримые результаты.
       </p>
 
-      <p v-if="error" class="mt-6 text-lg text-zinc-400">
-        Портфолио временно недоступно. Попробуйте обновить страницу позже.
+      <p v-if="error" class="mt-8 text-zinc-400">
+        Портфолио временно недоступно. Проверьте INTEGRATION_SECRET и GOGOL_DASHBOARD_BASE_URL в
+        .env.
       </p>
 
       <div
         v-else-if="pending"
-        class="mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3"
+        class="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3"
       >
         <div
-          v-for="index in 3"
-          :key="index"
-          class="h-72 animate-pulse rounded-2xl border border-zinc-800 bg-zinc-900/60"
+          v-for="i in 3"
+          :key="i"
+          class="h-64 animate-pulse rounded-paper bg-zinc-800/50"
         />
       </div>
 
-      <p
-        v-else-if="!projects?.length"
-        class="mt-6 text-lg text-zinc-400"
-      >
-        Пока нет проектов в портфолио.
-      </p>
+      <p v-else-if="!projects?.length" class="mt-8 text-zinc-400">Пока нет проектов.</p>
 
       <div
         v-else
-        class="mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3"
+        class="mt-8 grid grid-cols-1 gap-4 pt-2 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3"
       >
-        <NuxtLink
+        <TiltCard
           v-for="project in projects"
           :key="project.id"
+          v-slot="tilt"
+          tag="NuxtLink"
           :to="`/portfolio/${project.id}`"
-          class="group block h-full no-underline"
+          :class="[PAPER_CARD, 'group flex h-full flex-col overflow-visible no-underline']"
         >
-          <HoverLift
-            class="flex h-full cursor-pointer flex-col rounded-2xl border border-zinc-800 bg-zinc-900/80 p-8"
+          <div
+            v-if="project.images.length"
+            class="relative z-10 shrink-0 transition-[transform,box-shadow] duration-200 ease-out"
+            :class="tilt.canTilt && tilt.isHovering ? 'shadow-paper' : ''"
+            :style="galleryLiftStyle(tilt)"
           >
-          <div class="rounded-xl border border-cyan-400/25 bg-zinc-950/80 p-5 shadow-[0_10px_24px_rgba(6,182,212,0.16)]">
-            <h3 class="text-2xl font-semibold">{{ project.title }}</h3>
-            <p class="mt-1 text-sm text-zinc-400">
+            <ImageCarousel
+              :images="project.images"
+              :alt="project.title"
+              image-class="h-44 w-full object-cover sm:h-48"
+            />
+          </div>
+          <div class="relative z-0 flex flex-1 flex-col rounded-b-paper bg-paper p-4 sm:p-5">
+            <h3 class="text-xl font-semibold text-paper-ink">{{ project.title }}</h3>
+            <p class="mt-1 text-sm text-paper-mutedInk">
               {{ formatPortfolioMeta(project) }}
             </p>
+            <p class="mt-2 line-clamp-2 flex-1 text-base text-paper-mutedInk">
+              {{ project.shortDescription }}
+            </p>
+            <span :class="[PAPER_LINK, 'mt-3 inline-flex']">Открыть →</span>
           </div>
-
-          <ImageCarousel
-            v-if="project.images.length"
-            class="mt-5"
-            :images="project.images"
-            :alt="project.title"
-          />
-
-          <p class="mt-5 flex-1 text-lg leading-relaxed text-zinc-300">
-            {{ project.shortDescription }}
-          </p>
-
-          <div class="mt-5 pt-2">
-            <span
-              class="inline-flex w-full items-center justify-center rounded-xl border border-cyan-500/40 bg-cyan-500/10 px-4 py-3 text-sm font-medium text-cyan-300 transition group-hover:bg-cyan-500/20"
-            >
-              Подробнее
-            </span>
-          </div>
-          </HoverLift>
-        </NuxtLink>
+        </TiltCard>
       </div>
     </RevealOnScroll>
   </section>

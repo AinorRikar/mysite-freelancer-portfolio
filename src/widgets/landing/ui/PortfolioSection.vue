@@ -19,7 +19,6 @@ import { TiltCard } from "~/shared/ui/tilt-card";
 
 const { data: projects, pending, error } = await usePortfolio();
 
-// Parallax превью без rotate — 3D-наклон на предке с <img> ломает рендер в Chrome/Firefox
 const galleryLiftStyle = (tilt: {
   canTilt: boolean;
   isHovering: boolean;
@@ -64,62 +63,43 @@ const galleryLiftStyle = (tilt: {
       </p>
 
       <div v-else :class="[SECTION_BODY, GRID_3]">
-        <article
+        <TiltCard
           v-for="project in projects"
           :key="project.id"
-          :class="[PAPER_CARD, CARD_HOVER, 'group flex h-full flex-col overflow-hidden']"
+          v-slot="tilt"
+          tag="article"
+          :class="[PAPER_CARD, CARD_HOVER, 'group flex h-full flex-col overflow-visible']"
         >
-          <!-- Галерея: клик ведёт на проект, стрелки карусели — только листают -->
           <div
             v-if="project.images.length"
-            class="relative shrink-0"
+            class="relative z-10 shrink-0 transition-[transform,box-shadow] duration-200 ease-out"
+            :class="tilt.canTilt && tilt.isHovering ? 'shadow-paper' : ''"
+            :style="galleryLiftStyle(tilt)"
           >
-            <NuxtLink
-              :to="`/portfolio/${project.id}`"
-              class="absolute inset-0 z-[1] rounded-t-paper"
-              :aria-label="`Открыть проект: ${project.title}`"
+            <ImageCarousel
+              :images="project.images"
+              :alt="project.title"
+              :image-class="PORTFOLIO_CARD_IMAGE"
             />
-            <TiltCard
-              v-slot="tilt"
-              tag="div"
-              :max-tilt="0"
-              class="relative z-[2]"
-            >
-              <div
-                class="transition-[transform,box-shadow] duration-200 ease-out"
-                :class="tilt.canTilt && tilt.isHovering ? 'shadow-paper' : ''"
-                :style="galleryLiftStyle(tilt)"
-              >
-                <ImageCarousel
-                  :images="project.images"
-                  :alt="project.title"
-                  :image-class="PORTFOLIO_CARD_IMAGE"
-                  click-through
-                />
-              </div>
-            </TiltCard>
           </div>
 
-          <!-- Текст: 3D-наклон только здесь, без картинок внутри rotate -->
-          <TiltCard v-slot="tilt" tag="div" class="flex flex-1 flex-col">
+          <div class="relative z-0 flex flex-1 flex-col rounded-b-paper p-4 sm:p-5">
+            <h3 class="text-xl font-semibold text-paper-ink">{{ project.title }}</h3>
+            <p class="mt-1 text-sm text-paper-mutedInk">
+              {{ formatPortfolioMeta(project) }}
+            </p>
+            <p class="mt-2 line-clamp-2 flex-1 text-base text-paper-mutedInk">
+              {{ project.shortDescription }}
+            </p>
             <NuxtLink
               :to="`/portfolio/${project.id}`"
-              class="flex flex-1 flex-col rounded-b-paper p-4 no-underline sm:p-5"
+              :class="[BTN_PRIMARY_SM, 'relative z-20 mt-4 w-fit']"
             >
-              <h3 class="text-xl font-semibold text-paper-ink">{{ project.title }}</h3>
-              <p class="mt-1 text-sm text-paper-mutedInk">
-                {{ formatPortfolioMeta(project) }}
-              </p>
-              <p class="mt-2 line-clamp-2 flex-1 text-base text-paper-mutedInk">
-                {{ project.shortDescription }}
-              </p>
-              <span :class="[BTN_PRIMARY_SM, 'mt-4 w-fit']">
-                Открыть
-                <Icon :icon="ICON.ui.arrowForward" class="text-lg" />
-              </span>
+              Открыть
+              <Icon :icon="ICON.ui.arrowForward" class="text-lg" />
             </NuxtLink>
-          </TiltCard>
-        </article>
+          </div>
+        </TiltCard>
       </div>
     </RevealOnScroll>
   </section>

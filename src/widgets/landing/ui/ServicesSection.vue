@@ -1,50 +1,57 @@
 <script setup lang="ts">
+import { computed } from "vue";
 import { useSiteStore } from "~/entities/site";
-import { PAPER_CARD, PAPER_LINK, SECTION } from "~/shared/config/layout";
+import { isWideLastGridItem } from "~/shared/lib/serviceGrid";
+import { GRID_2, SECTION, SECTION_BODY, SECTION_DIVIDER } from "~/shared/config/layout";
+import { ICON } from "~/shared/config/icons";
 import { RevealOnScroll } from "~/shared/ui/reveal-on-scroll";
-import { TiltCard } from "~/shared/ui/tilt-card";
+import { SectionHeading } from "~/shared/ui/section-heading";
+import ServiceCard from "./ServiceCard.vue";
 
 const site = useSiteStore();
+
+const services = computed(() => site.sortedServices);
+
+// Диапазон цен проектных услуг (без почасовой поддержки)
+const priceLadder = computed(() => {
+  const prices = site.services
+    .map((s) => s.price)
+    .filter((p) => !p.includes("/час"));
+
+  if (prices.length < 2) {
+    return null;
+  }
+
+  const strip = (p: string) => p.replace(/^от\s+/i, "");
+  return `${strip(prices[0]!)} → ${strip(prices[prices.length - 1]!)}`;
+});
 </script>
 
 <template>
-  <section id="services" :class="[SECTION, 'border-t border-zinc-800/50']">
+  <section id="services" :class="[SECTION, SECTION_DIVIDER]">
     <RevealOnScroll class="w-full">
-      <p class="text-sm font-medium uppercase tracking-[0.16em] text-accent sm:text-base">
-        Услуги
-      </p>
-      <h2 class="mt-2 font-serif text-4xl font-semibold tracking-tight text-zinc-50 sm:text-5xl">
-        Форматы работы
-      </h2>
-      <p class="mt-3 max-w-2xl text-lg leading-relaxed text-zinc-400 sm:text-xl">
-        Сотрудничество для бизнеса, агентств и стартапов.
-      </p>
-
-      <div
-        class="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 xl:grid-cols-3"
+      <SectionHeading
+        :icon="ICON.section.services"
+        label="Услуги"
+        title="Форматы работы"
+        lead="От лендинга и корпоративного сайта до SaaS, магазина и почасовой поддержки."
       >
-        <TiltCard
-          v-for="service in site.services"
-          :key="service.slug"
-          tag="article"
-          :class="[PAPER_CARD, 'flex h-full flex-col p-5 sm:p-6']"
+        <p
+          v-if="priceLadder"
+          class="mt-2 text-sm tabular-nums text-zinc-500 sm:text-base"
         >
-          <h3 class="text-xl font-semibold leading-snug text-paper-ink">
-            {{ service.title }}
-          </h3>
-          <p class="mt-3 flex-1 text-base leading-relaxed text-paper-mutedInk">
-            {{ service.description }}
-          </p>
-          <div class="mt-5 border-t border-paper-border pt-4">
-            <p class="text-base font-semibold text-paper-ink">{{ service.price }}</p>
-            <NuxtLink
-              :to="`/services/${service.slug}`"
-              :class="[PAPER_LINK, 'mt-2 inline-flex']"
-            >
-              Подробнее →
-            </NuxtLink>
-          </div>
-        </TiltCard>
+          Проекты: {{ priceLadder }}
+        </p>
+      </SectionHeading>
+
+      <div :class="[SECTION_BODY, GRID_2]" aria-label="Список услуг">
+        <ServiceCard
+          v-for="(service, index) in services"
+          :key="service.slug"
+          :service="service"
+          :wide="isWideLastGridItem(index, services.length)"
+          :class="isWideLastGridItem(index, services.length) ? 'sm:col-span-2' : undefined"
+        />
       </div>
     </RevealOnScroll>
   </section>

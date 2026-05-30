@@ -14,6 +14,12 @@ const tabs = [
 ] as const;
 
 const activeTab = ref<(typeof tabs)[number]["id"]>("main");
+
+const tabClass = (isActive: boolean) =>
+  [
+    "rounded-md px-2 py-1 text-base font-medium transition",
+    isActive ? "text-accent" : "text-zinc-500 hover:text-zinc-300"
+  ].join(" ");
 </script>
 
 <template>
@@ -44,8 +50,7 @@ const activeTab = ref<(typeof tabs)[number]["id"]>("main");
               type="button"
               role="tab"
               :aria-selected="activeTab === tab.id"
-              class="rounded-md px-2 py-1 text-base text-zinc-500 transition hover:text-zinc-300"
-              :class="{ 'bg-white/5 text-zinc-200': activeTab === tab.id }"
+              :class="tabClass(activeTab === tab.id)"
               @click="activeTab = tab.id"
             >
               {{ tab.label }}

@@ -23,6 +23,8 @@ export default <Partial<Config>>{
         paper: {
           DEFAULT: "#faf7f0",
           muted: "#f0ebe3",
+          card: "#f1ece3",
+          inset: "#e6e0d6",
           border: "#ddd8ce",
           ink: "#1a1a18",
           mutedInk: "#5c5a55"

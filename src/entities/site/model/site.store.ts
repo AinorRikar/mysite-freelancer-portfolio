@@ -14,6 +14,7 @@ export const useSiteStore = defineStore("site", () => {
     aboutText: profile.aboutText,
     heroStats: profile.heroStats,
     services: service.services,
+    sortedServices: service.sortedServices,
     getServiceBySlug: service.getServiceBySlug
   };
 });

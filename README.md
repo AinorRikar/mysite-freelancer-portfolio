@@ -1,110 +1,109 @@
-# Freelancer Business Card (Nuxt 3)
+# MySite — сайт-визитка фрилансера
 
-Сайт-визитка фрилансера на Nuxt 3 + Nitro + TypeScript с SSR, FSD-структурой и Docker-окружением для серверного деплоя.
+Лендинг и витрина услуг на **Nuxt 3** с SSR: главная с hero-блоком, каталог услуг, портфолио из внешнего API, детальные страницы проектов и заявка на услугу.
 
-## Технологический стек
+## Что на сайте
 
-- Nuxt 3 (SSR + роутинг + сборка)
-- Nitro (server engine, API routes)
-- Vue 3 + Composition API
-- TypeScript
-- Pinia (`@pinia/nuxt`)
-- Tailwind CSS (`@nuxtjs/tailwindcss`)
-- Iconify (`@iconify/vue`, Material Symbols)
-- Docker + Docker Compose (reverse proxy — отдельно в `../gogol_nginx`)
+- **Главная** — переключение «Основной» / «Обо мне», CTA на услуги и портфолио, bento со статистикой.
+- **Услуги** — карточки с ценой, сроком, стеком; детальная страница `/services/[slug]`; заказ через модальное окно с формой.
+- **Портфолио** — сетка проектов с каруселью превью; страница проекта `/portfolio/[id]` с описанием, стеком, результатами и ссылками.
+- **Интеграция** — список проектов и медиа подтягиваются из **gogol dashboard** (Integration API); картинки отдаются через прокси с JWT, чтобы браузер не ходил на защищённый URL напрямую.
 
-## Архитектура: `server/` и `src/`
+## Стек
 
-- `server/` — серверный слой Nitro (API/обработчики).
-- `src/` — клиентский слой приложения (Nuxt app entry, pages, widgets, features, entities, shared).
+| Слой | Технологии |
+|------|------------|
+| Frontend | Vue 3, Nuxt 3, TypeScript, Tailwind CSS |
+| State | Pinia |
+| Icons | Iconify (Material Symbols) |
+| Server | Nitro (API routes, SSR) |
+| Deploy | Docker, внешняя сеть `web` + nginx в [`../gogol_nginx`](../gogol_nginx) |
 
-Nuxt настроен через `srcDir: "src/"`, поэтому импорты вида `~/features/...` резолвятся в `src/features/...`.
-
-## Структура проекта
+## Структура репозитория
 
 ```text
 .
-├── server/                      # Nitro API and server handlers
-│   └── api/
-├── src/                         # Client layer
-│   ├── app.vue                  # Root layout (header/main/footer + NuxtPage)
-│   ├── assets/                  # Global styles and static client assets
-│   ├── pages/                   # Route pages (Nuxt file-based routing)
-│   ├── widgets/                 # Large UI blocks / page sections
-│   │   ├── layout/
-│   │   └── landing/
-│   ├── features/                # User scenarios
-│   │   ├── contact-form/
-│   │   └── service-order/
-│   ├── entities/                # Domain entities and state
-│   │   ├── profile/
-│   │   ├── service/
-│   │   └── site/                # Compatibility facade over profile/service
-│   ├── shared/                  # Reusable shared primitives
-│   │   └── ui/
-│   ├── components/              # Nuxt auto-import components (if needed)
-│   └── stores/                  # Optional Pinia stores directory (legacy/extension point)
-├── scripts/
-│   └── fsd/check-public-api.mjs # Deep-import guardrail
-├── docs/
-│   └── FSD.md                   # FSD conventions for this codebase
-├── Dockerfile
-├── docker-compose.yml
+├── server/                 # Nitro: API и интеграция с dashboard
+│   ├── api/
+│   │   ├── portfolio.get.ts
+│   │   ├── portfolio/[id].get.ts
+│   │   ├── portfolio-media/[...path].get.ts   # прокси картинок
+│   │   └── profile.get.ts
+│   └── utils/
+├── src/                    # Nuxt-приложение (srcDir)
+│   ├── pages/              # /, /services/:slug, /portfolio/:id
+│   ├── widgets/            # landing, layout, portfolio-detail
+│   ├── features/           # contact-form, service-order, hero-блоки
+│   ├── entities/           # profile, service, portfolio, site (facade)
+│   └── shared/             # layout-токены, UI, icons, lib
+├── docs/FSD.md             # правила Feature-Sliced Design
+├── scripts/fsd/            # проверка public API импортов
 ├── tailwind.config.ts
 ├── nuxt.config.ts
-└── tsconfig.json
+├── Dockerfile
+└── docker-compose.yml
 ```
 
-## FSD правила в проекте
+Импорты вида `~/widgets/...` указывают на `src/`, не на корень репозитория.
 
-- Импорты между срезами — через public API (`index.ts`).
-- Deep import внутренних сегментов (`ui/model/lib/api/config`) запрещен вне среза.
-- Направление слоев: `pages -> widgets -> features -> entities -> shared`.
-- Детали и исключения описаны в `docs/FSD.md`.
+### Слои FSD (кратко)
 
-Проверка правил:
+Направление зависимостей: `pages → widgets → features → entities → shared`.
+
+Между срезами — только через `index.ts` (public API). Подробности и проверка:
 
 ```bash
 npm run fsd:check
 ```
 
-## Локальный запуск
+## Переменные окружения
 
-Установка зависимостей:
+Скопируйте `.env.example` в `.env` для локальной разработки:
+
+```bash
+cp .env.example .env
+```
+
+| Переменная | Назначение |
+|------------|------------|
+| `INTEGRATION_SECRET` | Секрет Integration API (тот же, что в gogol dashboard) |
+| `GOGOL_DASHBOARD_BASE_URL` | Базовый URL dashboard, напр. `http://178.250.158.178/dashboard` или `http://gogol-dashboard:3000/dashboard` в Docker |
+
+В `nuxt.config.ts` они мапятся на `runtimeConfig.integrationSecret` и `runtimeConfig.gogolDashboardBaseUrl`.
+
+Без корректных значений портфолио на сайте не загрузится — в секции будет сообщение об ошибке.
+
+## Локальная разработка
 
 ```bash
 npm install
-```
-
-Режим разработки:
-
-```bash
 npm run dev
 ```
 
-Production build:
+Сайт по умолчанию: [http://localhost:3000](http://localhost:3000).
+
+Сборка и preview production:
 
 ```bash
 npm run build
-```
-
-Локальный preview production-сборки:
-
-```bash
 npm run preview
 ```
 
-## Docker и деплой
+Если параллельно уже крутится `nuxt dev` и build падает из‑за lock-файла:
 
-### Быстрый запуск через Docker Compose
+```bash
+NUXT_IGNORE_LOCK=1 npm run build
+```
 
-На сервере один раз создайте общую сеть (если ещё нет):
+## Docker
+
+На сервере один раз создайте общую сеть (если её ещё нет):
 
 ```bash
 docker network create web
 ```
 
-Запуск приложения (порт **3000** только внутри сети `web`, снаружи — через nginx):
+Сборка и запуск (порт **3000** только внутри сети `web`):
 
 ```bash
 docker compose build
@@ -112,14 +111,36 @@ docker compose up -d
 docker compose logs -f app
 ```
 
-Контейнер `mysite-app` билдит Nuxt и слушает `3000` в сети `web`.
+Переменные `INTEGRATION_SECRET` и `GOGOL_DASHBOARD_BASE_URL` задайте в `.env` рядом с `docker-compose.yml` или экспортируйте в shell — compose подхватит их в контейнер.
 
-### Reverse proxy и HTTPS
+HTTPS и проксирование снаружи — в репозитории **gogol_nginx** (порты 80/443, TLS, upstream на `mysite-app`).
 
-Nginx вынесен в соседний репозиторий [`../gogol_nginx`](../gogol_nginx): порты **80/443**, TLS, прокси на `mysite-app`, gogol dashboard и movement-studio. Инструкции по сертификатам и запуску — в README того проекта.
+## API этого проекта
 
-## Полезные примечания
+| Endpoint | Описание |
+|----------|----------|
+| `GET /api/portfolio` | Список проектов (прокси в dashboard + переписанные URL медиа) |
+| `GET /api/portfolio/:id` | Один проект |
+| `GET /api/portfolio-media/*` | Прокси файла с `Authorization: Bearer` |
+| `GET /api/profile` | Профиль для совместимости (если используется) |
 
-- Если `nuxt dev` уже запущен, для build/generate в параллельной сессии используйте:
-  - `NUXT_IGNORE_LOCK=1 npm run build`
-- Для поддержки чистой архитектуры запускайте `npm run fsd:check` перед коммитом.
+Данные услуг и текст hero хранятся в Pinia (`entities/service`, `entities/profile`), не в dashboard.
+
+## Скрипты
+
+| Команда | Действие |
+|---------|----------|
+| `npm run dev` | Dev-сервер |
+| `npm run build` | Production-сборка |
+| `npm run preview` | Preview собранного приложения |
+| `npm run fsd:check` | Проверка импортов по FSD |
+
+## Дизайн
+
+- Тёмный graphite-фон на лендинге, светлые paper-карточки для контента.
+- Общие классы и отступы — в `src/shared/config/layout.ts`, палитра — в `tailwind.config.ts`.
+- Иконки — константы в `src/shared/config/icons.ts` (Material Symbols через Iconify).
+
+---
+
+Вопросы по деплою nginx и сертификатам — в README соседнего репозитория `gogol_nginx`.

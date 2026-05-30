@@ -1,11 +1,19 @@
 <script setup lang="ts">
 import { Icon } from "@iconify/vue";
 import { ContactForm } from "~/features/contact-form";
-import { BTN_PRIMARY, PAPER_CARD, PAPER_LABEL } from "~/shared/config/layout";
+import { BTN_PRIMARY, BTN_PRIMARY_SM, PAPER_CARD, PAPER_LABEL } from "~/shared/config/layout";
 
-defineProps<{
-  serviceTitle: string;
-}>();
+withDefaults(
+  defineProps<{
+    serviceTitle: string;
+    compact?: boolean;
+    block?: boolean;
+  }>(),
+  {
+    compact: false,
+    block: false
+  }
+);
 
 const isModalOpen = ref(false);
 
@@ -20,8 +28,15 @@ const closeModal = () => {
 
 <template>
   <div>
-    <button type="button" :class="BTN_PRIMARY" @click="openModal">
-      <Icon icon="material-symbols:shopping-cart-checkout-rounded" />
+    <button
+      type="button"
+      :class="[compact ? BTN_PRIMARY_SM : BTN_PRIMARY, block && 'w-full']"
+      @click="openModal"
+    >
+      <Icon
+        icon="material-symbols:shopping-cart-checkout-rounded"
+        :class="compact ? 'text-lg' : 'text-xl'"
+      />
       Заказать
     </button>
 

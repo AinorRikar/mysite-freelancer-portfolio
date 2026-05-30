@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Icon } from "@iconify/vue";
 import { ref, watch } from "vue";
+import { ICON } from "~/shared/config/icons";
 import { BTN_GHOST, BTN_PRIMARY } from "~/shared/config/layout";
 
 const props = withDefaults(
@@ -50,10 +51,11 @@ watch(
 
     <div class="hero-enter-item mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
       <NuxtLink to="/#services" :class="[BTN_PRIMARY, 'w-full sm:w-auto']">
-        <Icon icon="material-symbols:design-services-rounded" class="text-xl" />
+        <Icon :icon="ICON.hero.services" class="text-xl" />
         Услуги
       </NuxtLink>
       <NuxtLink to="/#portfolio" :class="[BTN_GHOST, 'w-full sm:w-auto']">
+        <Icon :icon="ICON.hero.portfolio" class="text-xl" />
         Портфолио
       </NuxtLink>
     </div>

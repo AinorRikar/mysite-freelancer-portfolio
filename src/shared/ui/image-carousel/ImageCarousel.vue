@@ -148,7 +148,7 @@ watch(isLightboxOpen, (open) => {
 </script>
 
 <template>
-  <div class="relative overflow-hidden rounded-lg border border-paper-border bg-paper-muted">
+  <div class="relative overflow-hidden rounded-lg border border-paper-border bg-paper-inset">
     <button
       v-if="currentImage && lightbox"
       type="button"

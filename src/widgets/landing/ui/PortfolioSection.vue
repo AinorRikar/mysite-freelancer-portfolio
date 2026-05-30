@@ -1,12 +1,24 @@
 <script setup lang="ts">
 import { formatPortfolioMeta, usePortfolio } from "~/entities/portfolio";
-import { PAPER_CARD, PAPER_LINK, SECTION } from "~/shared/config/layout";
+import {
+  CARD_HOVER,
+  GRID_3,
+  PAPER_CARD,
+  PAPER_LINK,
+  PORTFOLIO_CARD_IMAGE,
+  SECTION,
+  SECTION_BODY,
+  SECTION_DIVIDER
+} from "~/shared/config/layout";
+import { ICON } from "~/shared/config/icons";
 import { ImageCarousel } from "~/shared/ui/image-carousel";
 import { RevealOnScroll } from "~/shared/ui/reveal-on-scroll";
+import { SectionHeading } from "~/shared/ui/section-heading";
 import { TiltCard } from "~/shared/ui/tilt-card";
 
 const { data: projects, pending, error } = await usePortfolio();
 
+// Лёгкий подъём превью при 3D-наклоне карточки (картинка вне rotate-контейнера TiltCard)
 const galleryLiftStyle = (tilt: {
   canTilt: boolean;
   isHovering: boolean;
@@ -24,27 +36,21 @@ const galleryLiftStyle = (tilt: {
 </script>
 
 <template>
-  <section id="portfolio" :class="[SECTION, 'border-t border-zinc-800/50']">
+  <section id="portfolio" :class="[SECTION, SECTION_DIVIDER]">
     <RevealOnScroll class="w-full">
-      <p class="text-sm font-medium uppercase tracking-[0.16em] text-accent sm:text-base">
-        Портфолио
-      </p>
-      <h2 class="mt-2 font-serif text-4xl font-semibold tracking-tight text-zinc-50 sm:text-5xl">
-        Избранные проекты
-      </h2>
-      <p class="mt-3 max-w-2xl text-lg leading-relaxed text-zinc-400 sm:text-xl">
-        Реальные задачи и измеримые результаты.
-      </p>
+      <SectionHeading
+        :icon="ICON.section.portfolio"
+        label="Портфолио"
+        title="Избранные проекты"
+        lead="Реальные задачи и измеримые результаты."
+      />
 
-      <p v-if="error" class="mt-8 text-zinc-400">
+      <p v-if="error" :class="[SECTION_BODY, 'text-zinc-400']">
         Портфолио временно недоступно. Проверьте INTEGRATION_SECRET и GOGOL_DASHBOARD_BASE_URL в
         .env.
       </p>
 
-      <div
-        v-else-if="pending"
-        class="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3"
-      >
+      <div v-else-if="pending" :class="[SECTION_BODY, GRID_3]">
         <div
           v-for="i in 3"
           :key="i"
@@ -52,19 +58,18 @@ const galleryLiftStyle = (tilt: {
         />
       </div>
 
-      <p v-else-if="!projects?.length" class="mt-8 text-zinc-400">Пока нет проектов.</p>
+      <p v-else-if="!projects?.length" :class="[SECTION_BODY, 'text-zinc-400']">
+        Пока нет проектов.
+      </p>
 
-      <div
-        v-else
-        class="mt-8 grid grid-cols-1 gap-4 pt-2 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3"
-      >
+      <div v-else :class="[SECTION_BODY, GRID_3]">
         <TiltCard
           v-for="project in projects"
           :key="project.id"
           v-slot="tilt"
           tag="NuxtLink"
           :to="`/portfolio/${project.id}`"
-          :class="[PAPER_CARD, 'group flex h-full flex-col overflow-visible no-underline']"
+          :class="[PAPER_CARD, CARD_HOVER, 'group flex h-full flex-col overflow-visible no-underline']"
         >
           <div
             v-if="project.images.length"
@@ -75,10 +80,11 @@ const galleryLiftStyle = (tilt: {
             <ImageCarousel
               :images="project.images"
               :alt="project.title"
-              image-class="h-44 w-full object-cover sm:h-48"
+              :image-class="PORTFOLIO_CARD_IMAGE"
             />
           </div>
-          <div class="relative z-0 flex flex-1 flex-col rounded-b-paper bg-paper p-4 sm:p-5">
+
+          <div class="relative z-0 flex flex-1 flex-col rounded-b-paper p-4 sm:p-5">
             <h3 class="text-xl font-semibold text-paper-ink">{{ project.title }}</h3>
             <p class="mt-1 text-sm text-paper-mutedInk">
               {{ formatPortfolioMeta(project) }}

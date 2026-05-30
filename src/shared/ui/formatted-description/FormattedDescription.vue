@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { parseDescription } from "~/shared/lib/parseDescription";
+import { BODY_LG, PAPER_INSET } from "~/shared/config/layout";
 
 const props = defineProps<{
   text: string;
@@ -13,7 +14,8 @@ const blocks = computed(() => parseDescription(props.text));
     <template v-for="(block, blockIndex) in blocks" :key="blockIndex">
       <p
         v-if="block.type === 'paragraph'"
-        class="whitespace-pre-line text-lg leading-relaxed text-paper-mutedInk sm:text-xl"
+        class="whitespace-pre-line"
+        :class="BODY_LG"
       >
         {{ block.text }}
       </p>
@@ -22,7 +24,7 @@ const blocks = computed(() => parseDescription(props.text));
         <li
           v-for="(item, itemIndex) in block.items"
           :key="itemIndex"
-          class="flex gap-3 rounded-lg border border-paper-border bg-paper-muted px-4 py-3"
+          :class="['flex gap-3 rounded-lg border border-paper-border px-4 py-3', PAPER_INSET]"
         >
           <span class="font-medium text-product" aria-hidden="true">
             {{ itemIndex + 1 }}.
@@ -35,7 +37,7 @@ const blocks = computed(() => parseDescription(props.text));
         <li
           v-for="(item, itemIndex) in block.items"
           :key="itemIndex"
-          class="flex gap-3 rounded-lg border border-paper-border bg-paper-muted px-4 py-3"
+          :class="['flex gap-3 rounded-lg border border-paper-border px-4 py-3', PAPER_INSET]"
         >
           <span class="text-paper-mutedInk" aria-hidden="true">—</span>
           <span class="text-lg leading-relaxed text-paper-ink">{{ item }}</span>

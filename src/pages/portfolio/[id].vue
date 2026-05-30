@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Icon } from "@iconify/vue";
 import { usePortfolioProject } from "~/entities/portfolio";
-import { BTN_GHOST_SM, PAGE_TOP, SECTION } from "~/shared/config/layout";
+import { BTN_GHOST_SM, PAGE_TOP, SECTION, SECTION_BODY } from "~/shared/config/layout";
 import { PortfolioProjectDetail } from "~/widgets/portfolio-detail";
 
 const route = useRoute();
@@ -29,7 +29,7 @@ useSeoMeta({
       Назад к портфолио
     </NuxtLink>
 
-    <div v-if="project" class="mt-8 w-full">
+    <div v-if="project" :class="[SECTION_BODY, 'w-full']">
       <PortfolioProjectDetail :project="project" />
     </div>
   </section>

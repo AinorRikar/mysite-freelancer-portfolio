@@ -6,12 +6,20 @@ import {
   type PortfolioProject
 } from "~/entities/portfolio";
 import {
+  CARD_PAD,
+  DETAIL_BLOCK,
+  DETAIL_STACK,
+  GRID_GAP,
   PAPER_CARD,
   PAPER_LABEL,
-  PAPER_LINK
+  PAPER_LINK,
+  PAPER_TAG
 } from "~/shared/config/layout";
+import { ICON } from "~/shared/config/icons";
+import { DetailHeading } from "~/shared/ui/detail-heading";
 import { FormattedDescription } from "~/shared/ui/formatted-description";
 import { ImageCarousel } from "~/shared/ui/image-carousel";
+import { PaperIcon } from "~/shared/ui/paper-icon";
 
 const props = defineProps<{
   project: PortfolioProject;
@@ -25,15 +33,20 @@ const referenceBlocks = computed(() =>
 </script>
 
 <template>
-  <article class="w-full space-y-6 sm:space-y-8">
-    <header :class="[PAPER_CARD, 'w-full p-5 sm:p-7']">
-      <p :class="PAPER_LABEL">Проект</p>
-      <h1 class="mt-2 font-serif text-4xl font-semibold text-paper-ink sm:text-5xl lg:text-6xl">
-        {{ project.title }}
-      </h1>
-      <p class="mt-2 text-base text-paper-mutedInk">
-        {{ formatPortfolioMeta(project) }}
-      </p>
+  <article :class="['w-full', DETAIL_STACK]">
+    <header :class="[PAPER_CARD, CARD_PAD, 'w-full sm:p-7']">
+      <div class="flex items-start gap-4">
+        <PaperIcon :icon="ICON.project.header" size="md" />
+        <div class="min-w-0">
+          <p :class="PAPER_LABEL">Проект</p>
+          <h1 class="mt-1 font-serif text-4xl font-semibold text-paper-ink sm:text-5xl lg:text-6xl">
+            {{ project.title }}
+          </h1>
+          <p class="mt-2 text-base text-paper-mutedInk">
+            {{ formatPortfolioMeta(project) }}
+          </p>
+        </div>
+      </div>
     </header>
 
     <ImageCarousel
@@ -44,29 +57,25 @@ const referenceBlocks = computed(() =>
       image-class="h-52 w-full object-cover sm:h-64 md:h-80 lg:h-[26rem]"
     />
 
-    <section v-if="project.fullDescription" :class="[PAPER_CARD, 'w-full p-5 sm:p-7']">
-      <h2 class="text-xl font-semibold text-accent">О проекте</h2>
+    <section v-if="project.fullDescription" :class="[PAPER_CARD, CARD_PAD, 'w-full sm:p-7']">
+      <DetailHeading title="О проекте" :icon="ICON.project.about" />
       <div class="mt-4">
         <FormattedDescription :text="project.fullDescription" />
       </div>
     </section>
 
-    <section v-if="techItems.length" :class="[PAPER_CARD, 'w-full p-5 sm:p-7']">
-      <h2 class="text-xl font-semibold text-accent">Стек технологий</h2>
+    <section v-if="techItems.length" :class="[PAPER_CARD, CARD_PAD, 'w-full sm:p-7']">
+      <DetailHeading title="Стек технологий" :icon="ICON.project.stack" />
       <div class="mt-4 flex flex-wrap gap-2">
-        <span
-          v-for="tech in techItems"
-          :key="tech"
-          class="inline-flex rounded-md border border-paper-border bg-paper-muted px-2.5 py-1 text-sm text-paper-ink"
-        >
+        <span v-for="tech in techItems" :key="tech" :class="PAPER_TAG">
           {{ tech }}
         </span>
       </div>
     </section>
 
     <section v-if="referenceBlocks.length" class="w-full space-y-4">
-      <h2 class="text-xl font-semibold text-accent">Результаты</h2>
-      <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
+      <DetailHeading title="Результаты" :icon="ICON.project.results" />
+      <div :class="`grid grid-cols-1 ${GRID_GAP} sm:grid-cols-2 lg:grid-cols-3`">
         <div
           v-for="block in referenceBlocks"
           :key="block.id"
@@ -81,8 +90,8 @@ const referenceBlocks = computed(() =>
     </section>
 
     <section v-if="project.links.length" class="w-full space-y-4">
-      <h2 class="text-xl font-semibold text-accent">Ссылки</h2>
-      <ul class="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-3">
+      <DetailHeading title="Ссылки" :icon="ICON.project.links" />
+      <ul :class="`grid grid-cols-1 ${GRID_GAP} sm:grid-cols-2`">
         <li v-for="link in project.links" :key="link.id">
           <a
             :href="link.url"

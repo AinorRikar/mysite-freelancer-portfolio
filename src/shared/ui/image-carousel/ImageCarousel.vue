@@ -14,12 +14,15 @@ const props = withDefaults(
     intervalMs?: number;
     imageClass?: string;
     lightbox?: boolean;
+    /** Клики проходят к ссылке под каруселью; кнопки листания остаются активными */
+    clickThrough?: boolean;
   }>(),
   {
     alt: "",
     intervalMs: 5000,
     imageClass: "h-44 w-full object-cover",
-    lightbox: false
+    lightbox: false,
+    clickThrough: false
   }
 );
 
@@ -148,7 +151,10 @@ watch(isLightboxOpen, (open) => {
 </script>
 
 <template>
-  <div class="relative overflow-hidden rounded-lg border border-paper-border bg-paper-inset">
+  <div
+    class="relative overflow-hidden rounded-lg border border-paper-border bg-paper-inset"
+    :class="clickThrough && 'pointer-events-none'"
+  >
     <button
       v-if="currentImage && lightbox"
       type="button"
@@ -177,7 +183,7 @@ watch(isLightboxOpen, (open) => {
       v-if="hasMultiple"
       type="button"
       aria-label="Предыдущее изображение"
-      class="absolute left-2 top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-zinc-900/50 text-white backdrop-blur-sm transition hover:bg-zinc-900/70"
+      class="absolute left-2 top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-zinc-900/50 text-white backdrop-blur-sm transition hover:bg-zinc-900/70 pointer-events-auto"
       @click="onPrevClick"
     >
       <Icon icon="material-symbols:chevron-left-rounded" class="text-2xl" />
@@ -187,7 +193,7 @@ watch(isLightboxOpen, (open) => {
       v-if="hasMultiple"
       type="button"
       aria-label="Следующее изображение"
-      class="absolute right-2 top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-zinc-900/50 text-white backdrop-blur-sm transition hover:bg-zinc-900/70"
+      class="absolute right-2 top-1/2 z-10 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-zinc-900/50 text-white backdrop-blur-sm transition hover:bg-zinc-900/70 pointer-events-auto"
       @click="onNextClick"
     >
       <Icon icon="material-symbols:chevron-right-rounded" class="text-2xl" />
